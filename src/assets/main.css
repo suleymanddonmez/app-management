@@ -34,7 +34,8 @@ button:hover {
 }
 
 button.btn-sm {
-  padding: 8px 15px;
+  padding: 6px 15px;
+  font-size: 13px;
 }
 
 .bg-info {

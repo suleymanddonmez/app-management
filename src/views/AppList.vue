@@ -1,4 +1,97 @@
-<script setup></script>
+<script setup>
+import { ref, onMounted } from "vue";
+// import axios from "axios";
+
+const apps = ref([]);
+const newParameter = ref("");
+const newValue = ref("");
+const newDescription = ref("");
+
+const getApps = () => {
+  apps.value = [
+    {
+      id: 1,
+      parameterKey: "min_version",
+      value: "1.4.4",
+      description: "Minimum required version of the app",
+      createdDate: "10/05/2021 01:58",
+    },
+    {
+      id: 2,
+      parameterKey: "latest_version",
+      value: "1.4.7",
+      description: "Latest version of the app",
+      createdDate: "10/05/2021 01:58",
+    },
+    {
+      id: 3,
+      parameterKey: "pricing_tier",
+      value: "t6",
+      description: "Pricing tier of the user",
+      createdDate: "07/07/2021 11:13",
+    },
+    {
+      id: 4,
+      parameterKey: "scroll",
+      value: "5",
+      description: "Index of Scroll Paywall for free users",
+      createdDate: "25/08/2021 10:22",
+    },
+    {
+      id: 5,
+      parameterKey: "scroll_limit",
+      value: "13",
+      description: "Index of Scroll Limit Paywall for free users",
+      createdDate: "25/08/2021 10:23",
+    },
+  ];
+};
+
+const editApp = (appId) => {
+  console.log("edit", appId);
+};
+
+const deleteApp = (appId) => {
+  apps.value = apps.value.filter((a) => a.id != appId);
+};
+
+const addApp = () => {
+  if (newParameter.value && newValue.value && newDescription.value) {
+    const newApp = {
+      id: apps.value.length + 1,
+      parameterKey: newParameter.value,
+      value: newValue.value,
+      description: newDescription.value,
+      createdDate: new Date().toLocaleString(),
+    };
+    apps.value.push(newApp);
+    newParameter.value = "";
+    newValue.value = "";
+    newDescription.value = "";
+  } else {
+    alert("Please fill in all fields");
+  }
+};
+
+onMounted(() => {
+  getApps();
+});
+
+// const users = ref([]); // users değişkenini tanımlayın
+
+// const fetchUsers = async () => {
+//   try {
+//     const response = await axios.get("https://jsonplaceholder.typicode.com/users");
+//     users.value = response.data; // API'den gelen veriyi users değişkenine atayın
+//   } catch (error) {
+//     console.error("Error fetching users:", error);
+//   }
+// };
+
+// onMounted(() => {
+//   fetchUsers();
+// });
+</script>
 
 <template>
   <header>
@@ -19,21 +112,24 @@
         </thead>
         <tbody>
           <!-- Burası döngüye girecek -->
-          <tr>
-            <td>min_version</td>
-            <td>1.4.4</td>
-            <td>Minimum required version of the app</td>
-            <td>10/05/2021 01:58</td>
-            <td><button class="btn-sm bg-info">Edit</button> <button class="btn-sm bg-danger">Delete</button></td>
+          <tr v-for="app in apps" :key="app.id">
+            <td>{{ app.parameterKey }}</td>
+            <td>{{ app.value }}</td>
+            <td>{{ app.description }}</td>
+            <td>{{ app.createdDate }}</td>
+            <td class="action-col">
+              <button class="btn-sm bg-info" v-on:click="editApp(app.id)">Edit</button>
+              <button class="btn-sm bg-danger" v-on:click="deleteApp(app.id)">Delete</button>
+            </td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
-            <td><input type="text" placeholder="New Parameter" /></td>
-            <td><input type="text" placeholder="Value" /></td>
-            <td colspan="2"><input type="text" placeholder="New Description" /></td>
+            <td><input type="text" placeholder="New Parameter" v-model="newParameter" /></td>
+            <td><input type="text" placeholder="Value" v-model="newValue" /></td>
+            <td colspan="2"><input type="text" placeholder="New Description" v-model="newDescription" /></td>
 
-            <td><button class="btn-sm bg-success">Add</button></td>
+            <td><button class="btn-sm bg-success" v-on:click="addApp">ADD</button></td>
           </tr>
         </tfoot>
       </table>
@@ -75,10 +171,18 @@
   outline: none;
   background-color: transparent;
   width: 100%;
-  color: rgb(110, 117, 123)
+  color: rgb(110, 117, 123);
 }
 
 .app-table input:focus {
   border-color: rgb(208, 91, 197) !important;
+}
+
+.action-col {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 </style>
