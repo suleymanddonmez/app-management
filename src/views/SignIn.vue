@@ -24,7 +24,7 @@ const currentYear = ref(new Date().getFullYear());
 h1 {
   text-align: center;
   margin: 8px;
-  color: gray;
+  color: rgb(50, 51, 90);
 }
 
 .container {
@@ -32,7 +32,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 65px
+  padding-top: 65px;
 }
 
 .login-form {
@@ -46,15 +46,16 @@ h1 {
 
 .form-inputs input {
   font-size: 18px;
-  padding: 5px;
+  padding: 15px;
   border-radius: 8px;
-  border: 2px solid gray;
+  border: 2px solid rgb(45, 53, 81);
   outline: none;
   background-color: transparent;
+  color: rgb(110, 117, 123)
 }
 
 .form-inputs input:focus {
-  border-color: red !important;
+  border-color: rgb(208, 91, 197) !important;
 }
 
 .form-inputs input:nth-child(1) {
@@ -83,5 +84,8 @@ h1 {
 .copyright {
   margin-top: 40px;
   text-align: center;
+}
+.copyright span {
+  color: rgb(110, 117, 124);
 }
 </style>

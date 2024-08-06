@@ -57,26 +57,28 @@
 
 .app-table thead th {
   text-align: left;
-  color: gray;
+  color: rgb(123, 139, 161);
   font-size: 25px;
   padding: 10px;
 }
 
 .app-table td {
   padding: 10px;
+  color: rgb(210, 210, 213);
 }
 
 .app-table input {
   font-size: 14px;
   padding: 10px;
   border-radius: 8px;
-  border: 2px solid gray;
+  border: 2px solid rgb(45, 53, 81);
   outline: none;
   background-color: transparent;
   width: 100%;
+  color: rgb(110, 117, 123)
 }
 
 .app-table input:focus {
-  border-color: red !important;
+  border-color: rgb(208, 91, 197) !important;
 }
 </style>
