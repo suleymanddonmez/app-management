@@ -21,11 +21,17 @@ router.post("/new", async (req, res) => {
   const { parameterKey, value, description } = req.body;
   const createdDate = new Date();
   try {
-    let app = new App({ parameterKey, value, description, createdDate });
+    let app = new App({ parameterKey, value, description, createdDate, activeUser: "" });
     await app.save();
     res.status(201).send("New app created");
   } catch (error) {
-    res.status(400).send(error.message);
+    if (error.code == 11000) {
+      let duplicateKey = Object.keys(error.keyPattern)[0]
+      res.status(400).send(`${duplicateKey} must be unique!`);
+    }
+    else {
+      res.status(400).send(error.message);
+    }
   }
 });
 
@@ -35,7 +41,7 @@ router.post("/edit", async (req, res) => {
     const app = await App.findById(id);
     if (!app) {
       return res.status(404).send("App not found");
-    } else if (app.activeUser != "") {
+    } else if (app.activeUser != "" && app.activeUser != req.user) {
       return res.status(401).send("This record is being edited by another user!");
     } else {
       await clearActiveUsers(req.user);
@@ -56,10 +62,14 @@ router.post("/edit", async (req, res) => {
 router.post("/del", async (req, res) => {
   const { id } = req.body;
   try {
-    const app = await App.findByIdAndDelete(id);
+    const app = await App.findById(id);
     if (!app) {
       return res.status(404).send("App not found");
     }
+    else if (app.activeUser != "" && app.activeUser != req.user) {
+      return res.status(401).send("This record is being edited by another user!");
+    }
+    await App.findByIdAndDelete(id);
     res.status(200).send("App deleted");
   } catch (error) {
     res.status(400).send(error.message);

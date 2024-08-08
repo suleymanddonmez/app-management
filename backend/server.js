@@ -10,7 +10,19 @@ app.use(express.json());
 
 // allow all origins
 // app.use(cors());
-app.use(cors({ origin: 'https://app.yazilimdev.com', methods: ['GET', 'POST'] }));
+
+const allowedOrigins = ['https://app.yazilimdev.com', 'http://localhost:5173'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST'],
+};
+app.use(cors(corsOptions));
 
 const userRoute = require("./routes/user");
 app.use("/user", userRoute);
