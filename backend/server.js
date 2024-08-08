@@ -8,17 +8,9 @@ const app = express();
 
 app.use(express.json());
 
-// Tüm isteklerde CORS izinleri sağlamak için:
-app.use(cors());
-
-// Belirli bir origin için CORS izinleri sağlamak için:
-// app.use(cors({ origin: 'http://example.com' }));
-
-// Belirli bir origin ve yöntemler için CORS izinleri sağlamak için:
-// app.use(cors({ origin: 'http://example.com', methods: ['GET', 'POST'] }));
-
-// Veya özelleştirilmiş bir fonksiyon kullanarak CORS izinleri sağlamak için:
-// app.use(cors({ origin: (origin, callback) => { callback(null, true); } }));
+// allow all origins
+// app.use(cors());
+app.use(cors({ origin: 'https://app.yazilimdev.com', methods: ['GET', 'POST'] }));
 
 const userRoute = require("./routes/user");
 app.use("/user", userRoute);
