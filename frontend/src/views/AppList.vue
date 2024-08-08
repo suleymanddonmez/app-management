@@ -5,84 +5,71 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
-// apps.value = [
-//   {
-//     id: 1,
-//     parameterKey: "min_version",
-//     value: "1.4.4",
-//     description: "Minimum required version of the app",
-//     createdDate: "10/05/2021 01:58",
-//   },
-//   {
-//     id: 2,
-//     parameterKey: "latest_version",
-//     value: "1.4.7",
-//     description: "Latest version of the app",
-//     createdDate: "10/05/2021 01:58",
-//   },
-//   {
-//     id: 3,
-//     parameterKey: "pricing_tier",
-//     value: "t6",
-//     description: "Pricing tier of the user",
-//     createdDate: "07/07/2021 11:13",
-//   },
-//   {
-//     id: 4,
-//     parameterKey: "scroll",
-//     value: "5",
-//     description: "Index of Scroll Paywall for free users",
-//     createdDate: "25/08/2021 10:22",
-//   },
-//   {
-//     id: 5,
-//     parameterKey: "scroll_limit",
-//     value: "13",
-//     description: "Index of Scroll Limit Paywall for free users",
-//     createdDate: "25/08/2021 10:23",
-//   },
-// ];
-
 const router = useRouter();
 const store = useStore();
+
 function triggerNotification(type, message) {
   store.dispatch("triggerNotification", { type, message });
 }
 
+function triggerModal(title, message, confirm, close) {
+  store.dispatch("triggerModal", { title, message, confirm, close });
+}
+
 const apps = ref([]);
-const newParameter = ref("");
-const newValue = ref("");
-const newDescription = ref("");
+const newApp = ref({
+  parameterKey: "",
+  value: "",
+  description: "",
+});
+const editedApp = ref({});
 
 const getApps = async () => {
+  triggerNotification("loading", "Loading...");
   const response = await fetchApi(requests.getApps);
   if (response.success) {
     apps.value = response.data;
+    triggerNotification("success", "Data updated successfully");
   } else {
+    triggerNotification("error", response.error);
     router.push("/signin");
   }
 };
 
-const editApp = (appId) => {
-  console.log("edit", appId);
+const editApp = async (app) => {
+  const response = await fetchApi(requests.editApp, "POST", { id: app.id });
+  if (response.success) {
+    editedApp.value = { ...app };
+  } else {
+    triggerNotification("error", response.error);
+  }
 };
 
 const deleteApp = (appId) => {
-  apps.value = apps.value.filter((a) => a.id != appId);
+  triggerModal("Delete App Record", "The relevant record will be deleted. Do you confirm?", async () => {
+    triggerNotification("loading", "Loading...");
+    const response = await fetchApi(requests.delApp, "POST", { id: appId });
+    if (response.success) {
+      triggerNotification("success", "Deleted app successfully");
+      getApps();
+    } else {
+      triggerNotification("error", response.error);
+    }
+  });
 };
 
 const addApp = async () => {
   triggerNotification("loading", "Loading...");
-  if (newParameter.value && newValue.value && newDescription.value) {
+  if (newApp.value.parameterKey && newApp.value.value && newApp.value.description) {
     const response = await fetchApi(requests.addApp, "POST", {
-      parameterKey: newParameter.value,
-      value: newValue.value,
-      description: newDescription.value,
+      parameterKey: newApp.value.parameterKey,
+      value: newApp.value.value,
+      description: newApp.value.description,
     });
     if (response.success) {
-      newParameter.value = "";
-      newValue.value = "";
-      newDescription.value = "";
+      newApp.value.parameterKey = "";
+      newApp.value.value = "";
+      newApp.value.description = "";
       triggerNotification("success", "Saved new app successfully");
       getApps();
     } else {
@@ -93,10 +80,24 @@ const addApp = async () => {
   }
 };
 
+const saveApp = async () => {
+  const response = await fetchApi(requests.updateApp, "POST", {
+    id: editedApp.value.id,
+    parameterKey: editedApp.value.parameterKey,
+    value: editedApp.value.value,
+    description: editedApp.value.description,
+  });
+  if (response.success) {
+    editedApp.value = {};
+    triggerNotification("success", "Updated app successfully");
+    getApps();
+  } else {
+    triggerNotification("error", response.error);
+  }
+};
+
 onMounted(() => {
-  triggerNotification("loading", "Loading...");
   getApps();
-  triggerNotification("success", "Data updated successfully");
 });
 </script>
 
@@ -104,7 +105,7 @@ onMounted(() => {
   <AppHeader />
   <main>
     <div class="container">
-      <table class="app-table">
+      <table class="app-table hidden-mobile">
         <thead>
           <tr>
             <th>Parameter Key</th>
@@ -116,25 +117,55 @@ onMounted(() => {
         </thead>
         <tbody>
           <tr v-for="app in apps" :key="app.id">
-            <td>{{ app.parameterKey }}</td>
-            <td>{{ app.value }}</td>
-            <td>{{ app.description }}</td>
+            <td v-if="editedApp.id !== app.id">{{ app.parameterKey }}</td>
+            <td v-else><input type="text" v-model="editedApp.parameterKey" /></td>
+            <td v-if="editedApp.id !== app.id">{{ app.value }}</td>
+            <td v-else><input type="text" v-model="editedApp.value" /></td>
+            <td v-if="editedApp.id !== app.id">{{ app.description }}</td>
+            <td v-else><input type="text" v-model="editedApp.description" /></td>
             <td>{{ app.createdDate }}</td>
             <td class="action-col">
-              <button class="btn-sm bg-info" v-on:click="editApp(app.id)">Edit</button>
+              <button v-if="editedApp.id !== app.id" class="btn-sm bg-info" v-on:click="editApp(app)">Edit</button>
+              <button v-else class="btn-sm bg-success" v-on:click="saveApp()">Save</button>
               <button class="btn-sm bg-danger" v-on:click="deleteApp(app.id)">Delete</button>
             </td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
-            <td><input type="text" placeholder="New Parameter" v-model="newParameter" /></td>
-            <td><input type="text" placeholder="Value" v-model="newValue" /></td>
-            <td colspan="2"><input type="text" placeholder="New Description" v-model="newDescription" /></td>
+            <td><input type="text" placeholder="New Parameter" v-model="newApp.parameterKey" /></td>
+            <td><input type="text" placeholder="Value" v-model="newApp.value" /></td>
+            <td colspan="2"><input type="text" placeholder="New Description" v-model="newApp.description" /></td>
             <td><button class="btn-sm bg-success" v-on:click="addApp">ADD</button></td>
           </tr>
         </tfoot>
       </table>
+      <div class="app-div visible-mobile" v-for="app in apps" :key="app.id">
+        <div class="data-row">
+          <span class="data-title">Parameter Key:</span>
+          <span v-if="editedApp.id !== app.id">{{ app.parameterKey }}</span>
+          <span v-else><input class="input-sm" type="text" v-model="editedApp.parameterKey" /></span>
+        </div>
+        <div class="data-row">
+          <span class="data-title">Value:</span>
+          <span v-if="editedApp.id !== app.id">{{ app.value }}</span>
+          <span v-else><input class="input-sm" type="text" v-model="editedApp.value" /></span>
+        </div>
+        <div class="data-row">
+          <span class="data-title">Description:</span>
+          <span v-if="editedApp.id !== app.id">{{ app.description }}</span>
+          <span v-else><input class="input-sm" type="text" v-model="editedApp.description" /></span>
+        </div>
+        <div class="data-row">
+          <span class="data-title">Create Date:</span>
+          <span>{{ app.createdDate }}</span>
+        </div>
+        <div class="data-action-row">
+          <button v-if="editedApp.id !== app.id" class="btn-sm bg-info" v-on:click="editApp(app)">Edit</button>
+          <button v-else class="btn-sm bg-success" v-on:click="saveApp()">Save</button>
+          <button class="btn-sm bg-danger" v-on:click="deleteApp(app.id)">Delete</button>
+        </div>
+      </div>
     </div>
   </main>
 </template>
@@ -161,14 +192,7 @@ onMounted(() => {
 }
 
 .app-table input {
-  font-size: 14px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 2px solid rgb(45, 53, 81);
-  outline: none;
-  background-color: transparent;
   width: 100%;
-  color: rgb(110, 117, 123);
 }
 
 .app-table input:focus {
@@ -181,5 +205,29 @@ onMounted(() => {
   align-items: center;
   gap: 15px;
   flex-wrap: wrap;
+}
+
+.app-div {
+  border: 2px solid white;
+  border-radius: 20px;
+  padding: 4px 12px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.data-row .data-title {
+  font-weight: bold;
+}
+
+.data-row span {
+  color: rgb(210, 210, 213);
+  margin-right: 4px;
+}
+
+.data-action-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
 }
 </style>

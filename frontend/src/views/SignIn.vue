@@ -11,8 +11,8 @@ function triggerNotification(type, message) {
 }
 
 const currentYear = ref(new Date().getFullYear());
-const email = ref("tr.suleymandonmez@gmail.com");
-const password = ref("sd123");
+const email = ref("testuser@yazilimdev.com");
+const password = ref("test123");
 
 const login = async () => {
   triggerNotification("loading", "Loading...");

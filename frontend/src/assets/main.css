@@ -29,8 +29,8 @@ button {
 }
 
 button:hover {
-  transition: all .2s;
-  box-shadow: inset rgba(60, 70, 85, 0.2) 0px 0px 40px 0px, inset rgba(60, 70, 85, 0.2) 0px 0px 40px 0px, inset rgba(0, 0, 0, 0.5) 0px 0px 36px -24px;;
+  transition: all 0.2s;
+  box-shadow: inset rgba(60, 70, 85, 0.2) 0px 0px 40px 0px, inset rgba(60, 70, 85, 0.2) 0px 0px 40px 0px, inset rgba(0, 0, 0, 0.5) 0px 0px 36px -24px;
 }
 
 button.btn-sm {
@@ -54,4 +54,34 @@ button.btn-sm {
   background: linear-gradient(10deg, rgba(68, 160, 229) 0%, rgba(94, 207, 209) 70%, rgba(108, 233, 200) 100%);
   /* background-color: green; */
   color: white;
+}
+
+
+.visible-mobile {
+  display: none;
+}
+
+@media (max-width: 576px) {
+  .hidden-mobile {
+    display: none;
+  }
+  .visible-mobile {
+    display: block;
+  }
+}
+
+input {
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid rgb(45, 53, 81);
+  outline: none;
+  background-color: transparent;
+  width: 100%;
+  color: rgb(110, 117, 123);
+  margin: 4px 0px;
+}
+
+input.input-sm {
+  padding: 4px;
 }

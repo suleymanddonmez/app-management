@@ -9,10 +9,14 @@ const getJWTToken = () => {
 export const requests = {
   isLoggedIn: "user/isloggedin",
   login: "user/login",
+  logout: "user/logout",
   register: "user/register",
   getUsers: "user/all",
   getApps: "app/all",
   addApp: "app/new",
+  delApp: "app/del",
+  updateApp: "app/update",
+  editApp: "app/edit",
 };
 
 export async function fetchApi(route, method = "GET", params) {

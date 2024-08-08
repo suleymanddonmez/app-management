@@ -46,7 +46,6 @@ const iconComponent = computed(() => {
   align-items: center;
   justify-content: flex-start;
   gap: 15px;
-  flex-wrap: wrap;
 }
 .notification.info {
   background: linear-gradient(10deg, rgba(58, 98, 236) 0%, rgba(61, 124, 238) 70%, rgba(64, 136, 240) 100%);

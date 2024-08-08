@@ -21,6 +21,7 @@ import { useRouter } from "vue-router";
 import IconAccount from "./icons/IconAccount.vue";
 import IconArrowDown from "./icons/IconArrowDown.vue";
 import IconArrowUp from "./icons/IconArrowUp.vue";
+import { fetchApi, requests } from "@/api/client";
 
 const router = useRouter();
 
@@ -32,7 +33,8 @@ const options = [
   },
 ];
 
-function logout() {
+async function logout() {
+  await fetchApi(requests.logout, "POST");
   localStorage.removeItem("access-token");
   router.push("/signin");
 }
