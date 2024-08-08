@@ -26,7 +26,7 @@ app.use("/user", userRoute);
 const appRoute = require("./routes/app");
 app.use("/app", auth, appRoute);
 
-const port = 3001;
+const port = 3007;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
