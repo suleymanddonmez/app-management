@@ -1,0 +1,33 @@
+# Resmi Node.js çalışma zamanını temel al
+FROM node:20-alpine as build
+
+# Çalışma dizini ayarla
+WORKDIR /
+
+# package.json ve package-lock.json'ı çalışma dizinine kopyala
+COPY package*.json ./
+
+# Bağımlılıkları yükle
+RUN npm install
+
+# Tüm uygulama kodunu konteynere kopyala
+COPY . .
+
+# Üretim için React uygulamasını oluştur
+RUN npm run build
+
+# Üretim sunucusu olarak Nginx kullan
+FROM nginx:alpine
+
+# ngnix.conf dosyasını konteynere kopyala
+# nginx.conf dosyasını burada image içerisine dahil edilirse volume olarak mount edilmesine gerek yok. Fakat düzenlemeye açık olmuyor.
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Oluşturulan React uygulamasını Nginx'in web sunucusu dizinine kopyala
+COPY --from=build /dist /usr/share/nginx/html
+
+# Nginx sunucusu için port 80'i dışa aç
+EXPOSE 3006
+
+# Konteyner çalıştığında Nginx'i başlat
+CMD ["nginx", "-g", "daemon off;"]

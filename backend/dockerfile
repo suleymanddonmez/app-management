@@ -1,0 +1,20 @@
+# Resmi Node.js çalışma zamanını temel al
+FROM node:20-alpine as build
+
+# Çalışma dizini ayarla
+WORKDIR /
+
+# package.json ve package-lock.json'ı çalışma dizinine kopyala
+COPY package*.json ./
+
+# Bağımlılıkları yükle
+RUN npm install
+
+# Tüm uygulama kodunu konteynere kopyala
+COPY . .
+
+# Nginx sunucusu için port 80'i dışa aç
+EXPOSE 3007
+
+# Konteyner çalıştığında Nginx'i başlat
+CMD [ "node", "server.js" ]
