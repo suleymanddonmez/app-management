@@ -123,4 +123,25 @@ h1 {
 .copyright span {
   color: rgb(110, 117, 124);
 }
+
+@media (max-width: 576px) {
+  .login-form {
+    width: 90%;
+  }
+}
+@media (max-width: 768px) {
+  .login-form {
+    width: 70%;
+  }
+}
+@media (max-width: 992px) {
+  .login-form {
+    width: 70%;
+  }
+}
+@media (max-width: 1200px) {
+  .login-form {
+    width: 50%;
+  }
+}
 </style>
