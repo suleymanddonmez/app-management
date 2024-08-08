@@ -124,14 +124,9 @@ h1 {
   color: rgb(110, 117, 124);
 }
 
-@media (max-width: 576px) {
+@media (max-width: 1200px) {
   .login-form {
-    width: 90%;
-  }
-}
-@media (max-width: 768px) {
-  .login-form {
-    width: 70%;
+    width: 50%;
   }
 }
 @media (max-width: 992px) {
@@ -139,9 +134,14 @@ h1 {
     width: 70%;
   }
 }
-@media (max-width: 1200px) {
+@media (max-width: 768px) {
   .login-form {
-    width: 50%;
+    width: 70%;
+  }
+}
+@media (max-width: 576px) {
+  .login-form {
+    width: 90%;
   }
 }
 </style>

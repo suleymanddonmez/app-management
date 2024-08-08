@@ -193,6 +193,7 @@ onMounted(() => {
 
 .app-table input {
   width: 100%;
+  margin: 4px 0px;
 }
 
 .app-table input:focus {

@@ -50,7 +50,7 @@ function confirmModal() {
   padding: 20px;
   border-radius: 8px;
   max-width: 500px;
-  width: 100%;
+  width: 90%;
 }
 
 .modal h3 {
