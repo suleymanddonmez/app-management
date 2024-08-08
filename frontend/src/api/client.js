@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:3007/";
-// const apiUrl = "https://appapi.yazilimdev.com/";
+// const apiUrl = "http://localhost:3007/";
+const apiUrl = "https://appapi.yazilimdev.com/";
 
 const getJWTToken = () => {
   return localStorage.getItem("access-token");
