@@ -65,15 +65,16 @@ The application available at [https://app.yazilimdev.com](https://app.yazilimdev
 │   └── nginx.conf
 ├── docker-compose.yml
 └── README.md
+```
 
 ## Setup and Installation
 
 1. **Clone the Repository**
 
-   ```
-   git clone https://gitlab.com/your-repo.git
+  ```
+   git clone [https://github.com/suleymanddonmez/app-management.git](https://github.com/suleymanddonmez/app-management.git)
    cd your-repo
-   ```
+  ```
 
 2. **Install Dependencies**
 
