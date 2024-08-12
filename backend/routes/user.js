@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const App = require("../models/app");
 const dotenv = require("dotenv");
-const auth = require("../middleware/auth");
+const auth = require("../middlewares/auth");
 const { serializeUser } = require("../serializers/user");
 const { clearActiveUsers } = require("../functions/app");
 dotenv.config();
